@@ -1,4 +1,4 @@
-package com.vintech.chat
+package com.vintech.chat.ui.base
 
 import androidx.activity.ComponentActivity
 

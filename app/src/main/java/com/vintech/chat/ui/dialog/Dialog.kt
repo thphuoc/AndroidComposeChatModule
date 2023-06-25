@@ -1,4 +1,4 @@
-package com.vintech.chat.ui
+package com.vintech.chat.ui.dialog
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,7 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.vintech.chat.BaseViewModel
+import com.vintech.chat.ui.base.BaseViewModel
+import com.vintech.chat.ui.base.LoadingType
 
 @Composable
 fun SpinnerLoading(loadingState : BaseViewModel) {
