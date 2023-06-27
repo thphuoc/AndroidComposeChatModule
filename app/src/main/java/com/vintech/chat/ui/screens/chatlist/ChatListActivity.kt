@@ -2,26 +2,17 @@ package com.vintech.chat.ui.screens.chatlist
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,16 +22,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
 import com.vintech.chat.ui.base.BaseActivity
+import com.vintech.chat.ui.common.AvatarImageMedium
+import com.vintech.chat.ui.common.AvatarImageSmall
+import com.vintech.chat.ui.common.OnlineStatus
 import com.vintech.chat.ui.theme.AndroidComposeChatModuleTheme
 import com.vintech.chat.ui.theme.baseSize
+import com.vintech.chat.ui.theme.baseSizeX11
 import com.vintech.data.network.response.ConversationDAO
 
 class ChatListActivity : BaseActivity() {
@@ -73,7 +64,21 @@ fun ChatList() {
     //Search
     //List
     val _items = remember {
-        mutableStateListOf(ConversationDAO())
+        mutableStateListOf(
+            ConversationDAO(
+                name = "Phan Dang Luu",
+                lastMessage = "Hello",
+                avatars = listOf("https://yt3.googleusercontent.com/-CFTJHU7fEWb7BYEb6Jh9gm1EpetvVGQqtof0Rbh-VQRIznYYKJxCaqv_9HeBcmJmIsp2vOO9JU=s900-c-k-c0x00ffffff-no-rj")
+            ),
+            ConversationDAO(
+                name = "Giang Nguyen",
+                lastMessage = "Xin Chao",
+                avatars = listOf(
+                    "https://yt3.googleusercontent.com/-CFTJHU7fEWb7BYEb6Jh9gm1EpetvVGQqtof0Rbh-VQRIznYYKJxCaqv_9HeBcmJmIsp2vOO9JU=s900-c-k-c0x00ffffff-no-rj",
+                    "https://phantom-marca.unidadeditorial.es/bc7ac39a324ba34f956063664881b200/resize/828/f/jpg/assets/multimedia/imagenes/2022/12/22/16717250934792.jpg"
+                )
+            )
+        )
     }
     LazyColumn(content = {
         items(_items) {
@@ -89,13 +94,13 @@ fun ConversationItem(conversation: ConversationDAO) {
             .fillMaxWidth()
             .padding(baseSize), verticalAlignment = Alignment.CenterVertically
     ) {
-        ConversationAvatar(listOf("https://yt3.googleusercontent.com/-CFTJHU7fEWb7BYEb6Jh9gm1EpetvVGQqtof0Rbh-VQRIznYYKJxCaqv_9HeBcmJmIsp2vOO9JU=s900-c-k-c0x00ffffff-no-rj"))
+        ConversationAvatar(conversation.avatars)
         Spacer(modifier = Modifier.width(baseSize))
-        Column(verticalArrangement = Arrangement.spacedBy((-5).dp)) {
-            Text(text = "Van Duc Luu")
+        Column {
+            Text(text = conversation.name, modifier = Modifier.padding(0f.dp))
             Text(
-                text = "You: https://dad.com.vn",
-                modifier = Modifier.alpha(0.5f),
+                text = conversation.lastMessage,
+                modifier = Modifier.alpha(0.5f).padding(0f.dp),
                 fontSize = 12.sp
             )
         }
@@ -104,29 +109,26 @@ fun ConversationItem(conversation: ConversationDAO) {
 
 @Composable
 fun ConversationAvatar(avatars: List<String>) {
-    if (avatars.isNotEmpty()) {
+    if (avatars.size == 1) {
         SingleChatConversationAvatar(avatars.first())
+    } else {
+        MultipleChatConversationAvatar(avatars)
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun SingleChatConversationAvatar(path: String) {
-    Box(modifier = Modifier.size(54f.dp)) {
-        GlideImage(
-            model = path,
-            modifier = Modifier
-                .clip(CircleShape)
-                .width(54f.dp)
-                .height(54f.dp),
-            contentDescription = "LoadImage"
-        )
-        Box(
-            modifier = Modifier
-                .size(15f.dp).clip(CircleShape)
-                .align(Alignment.BottomEnd)
-                .background(Color.Green)
-                .border(width = 3f.dp, color = Color.White, shape = CircleShape)
-        )
+    Box(modifier = Modifier.size(baseSizeX11)) {
+        AvatarImageMedium(path)
+        OnlineStatus(modifier = Modifier.align(Alignment.BottomEnd))
+    }
+}
+
+@Composable
+fun MultipleChatConversationAvatar(avatars: List<String>) {
+    Box(modifier = Modifier.size(baseSizeX11)) {
+        AvatarImageSmall(avatars.first(), Modifier.align(Alignment.TopEnd))
+        AvatarImageSmall(avatars.last(), Modifier.align(Alignment.BottomStart))
+        OnlineStatus(modifier = Modifier.align(Alignment.BottomEnd))
     }
 }

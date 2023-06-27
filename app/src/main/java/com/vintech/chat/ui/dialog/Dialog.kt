@@ -11,14 +11,15 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.vintech.chat.ui.base.BaseViewModel
-import com.vintech.chat.ui.base.LoadingType
+import com.vintech.chat.ui.base.PageState
 
 @Composable
-fun SpinnerLoading(loadingState : BaseViewModel) {
-    val openState = loadingState.loadingState.observeAsState(LoadingType.HIDE)
-    if(openState.value == LoadingType.DIALOG) {
+fun SpinnerLoading(baseVm : BaseViewModel) {
+    val openState = baseVm.pageState.observeAsState()
+    if(openState.value == PageState.StateDoActionOnPage) {
+
         AlertDialog(
-            onDismissRequest = { loadingState.hideLoading() },
+            onDismissRequest = { baseVm.hideLoading() },
             title = {
                 Text(text = "Dialog Title")
             },
@@ -26,12 +27,12 @@ fun SpinnerLoading(loadingState : BaseViewModel) {
                 Text("This is the dialog content.")
             },
             confirmButton = {
-                Button(onClick = { loadingState.hideLoading() }) {
+                Button(onClick = { baseVm.hideLoading() }) {
                     Text("OK")
                 }
             },
             dismissButton = {
-                Button(onClick = { loadingState.hideLoading() }) {
+                Button(onClick = { baseVm.hideLoading() }) {
                     Text("Cancel")
                 }
             }
@@ -41,8 +42,8 @@ fun SpinnerLoading(loadingState : BaseViewModel) {
 
 @Composable
 fun StateLoading(loadingState : BaseViewModel, content: @Composable ()->Unit) {
-    val openState = loadingState.loadingState.observeAsState(LoadingType.HIDE)
-    if(openState.value == LoadingType.VIEW) {
+    val openState = loadingState.pageState.observeAsState()
+    if(openState.value == PageState.StateInitPageData) {
         Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
             Text(text = "Loading...")
         }

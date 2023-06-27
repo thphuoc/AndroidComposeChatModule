@@ -52,7 +52,7 @@ class MainActivity : BaseActivity() {
 fun Greeting(content: @Composable ()->Unit) {
     val viewModel: MainViewModel = getViewModel()
     val context = LocalContext.current
-    SpinnerLoading(loadingState = viewModel)
+    SpinnerLoading(baseVm = viewModel)
     Scaffold(topBar = {
         SmallTopAppBar(navigationIcon = {
             Icon(

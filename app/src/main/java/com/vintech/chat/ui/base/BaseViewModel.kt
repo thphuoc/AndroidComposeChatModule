@@ -10,8 +10,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 
 open class BaseViewModel : ViewModel() {
     private val disposables = arrayListOf<Disposable>()
-    private val _loadingState = MutableLiveData(LoadingType.HIDE)
-    val loadingState : LiveData<LoadingType> = _loadingState
+    private val _contentState = MutableLiveData<PageState>(PageState.StateInitPageData)
+    val pageState : LiveData<PageState> = _contentState
 
     override fun onCleared() {
         super.onCleared()
@@ -21,22 +21,30 @@ open class BaseViewModel : ViewModel() {
         disposables.clear()
     }
 
-    fun hideLoading() {
-        _loadingState.postValue(LoadingType.HIDE)
+    fun error() {
+
     }
 
-    fun <T : Any> Single<T>.listen(
-        loadingType: LoadingType = LoadingType.DIALOG,
-        onError: (ex: Throwable) -> Unit = {},
+    fun refresh() {}
+
+    fun hideLoading() {
+        _contentState.postValue(PageState.StateInitPageDataSuccess)
+    }
+
+    fun loadMore() {
+
+    }
+
+    fun <T : Any> Single<T>.start(
+        pageStateOnListening: PageState = PageState.StateDoActionOnPage,
         onSuccess: (result: T) -> Unit
     ) {
-        _loadingState.postValue(loadingType)
+        _contentState.postValue(pageStateOnListening)
         disposables.add(subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe({
+            _contentState.postValue(PageState.StateInitPageDataSuccess)
             onSuccess(it)
-            _loadingState.postValue(LoadingType.HIDE)
         }, {
-            onError(it)
-            _loadingState.postValue(LoadingType.HIDE)
+            _contentState.postValue(PageState.StateInitPageDataFailed(it))
         }))
     }
 }
