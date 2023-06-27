@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -25,10 +26,10 @@ fun StateView(
     modifier: Modifier = Modifier,
     baseViewModel: BaseViewModel,
     enableLoadMore: Boolean = false,
-    contentSuccess: LazyListScope.() -> Unit,
     contentEmpty: @Composable () -> Unit = { ContentEmptyDefault() },
     contentError: @Composable () -> Unit = { ContentErrorDefault { baseViewModel.error() } },
-    contentLoading: @Composable () -> Unit = { ContentLoadingDefault() }
+    contentLoading: @Composable () -> Unit = { ContentLoadingDefault() },
+    contentSuccess: LazyListScope.() -> Unit
 ) {
     val state = baseViewModel.pageState.observeAsState(initial = PageState.StateInitPageData)
     val isRefreshing = state.value == PageState.StatePageRefreshData
@@ -79,15 +80,15 @@ fun LazyListState.OnBottomReached(buffer: Int = 2, loadMore: () -> Unit) {
 
 @Composable
 fun ContentEmptyDefault() {
-
+    Text(text = "Empty")
 }
 
 @Composable
 fun ContentLoadingDefault() {
-
+    Text(text = "Loading...")
 }
 
 @Composable
 fun ContentErrorDefault(retry: () -> Unit) {
-
+    Text(text = "Error")
 }

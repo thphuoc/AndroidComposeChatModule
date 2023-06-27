@@ -25,6 +25,8 @@ open class BaseViewModel : ViewModel() {
 
     }
 
+    open fun loadPageData() {}
+
     fun refresh() {}
 
     fun hideLoading() {
@@ -36,15 +38,16 @@ open class BaseViewModel : ViewModel() {
     }
 
     fun <T : Any> Single<T>.start(
-        pageStateOnListening: PageState = PageState.StateDoActionOnPage,
+        pageStateOnListening: PageState = PageState.StateInitPageData,
         onSuccess: (result: T) -> Unit
     ) {
         _contentState.postValue(pageStateOnListening)
         disposables.add(subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe({
-            _contentState.postValue(PageState.StateInitPageDataSuccess)
+            hideLoading()
             onSuccess(it)
         }, {
             _contentState.postValue(PageState.StateInitPageDataFailed(it))
+            hideLoading()
         }))
     }
 }

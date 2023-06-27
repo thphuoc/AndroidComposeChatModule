@@ -16,7 +16,8 @@ import com.vintech.chat.ui.base.PageState
 @Composable
 fun SpinnerLoading(baseVm : BaseViewModel) {
     val openState = baseVm.pageState.observeAsState()
-    if(openState.value == PageState.StateDoActionOnPage) {
+    println("Phuoc: ${openState.value}")
+    if(openState.value is PageState.StateDoActionOnPage) {
 
         AlertDialog(
             onDismissRequest = { baseVm.hideLoading() },
